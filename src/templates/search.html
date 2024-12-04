@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Dropdown Example</title>
+    <!-- jQuery -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        img {
+            height: 30px; 
+            vertical-align: middle;
+            margin-right: 5px; 
+
+            
+        }
+
+        .container {
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .display-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .display-box {
+            padding: 10px;
+            margin: 10px;
+            text-align: center;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            visibility: hidden; 
+        }
+
+        .display-box.visible {
+            visibility: visible; 
+            
+        }
+
+        .full-width {
+            width: 100%;
+        }
+
+        .quarter-width {
+            width: calc(20% - 20px); 
+        }
+
+        #inputText, #dynamicDropdown {
+            width: 30%; 
+            padding: 10px;
+            margin-top: 10px;
+            box-sizing: border-box;
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        button {
+            border-radius: 5px; 
+            background: linear-gradient(to right, #111411, rgb(42, 43, 42)); 
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            font-size: 16px; 
+            color: white; 
+            font-weight: bold; 
+        }
+        
+
+        button:active {
+            
+            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) inset; 
+        }
+
+
+        .return-home-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .return-home-btn:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        
+        <a href="/" class="return-home-btn">Main Page</a>
+        
+        <h1>Search by country name</h1>
+        <input type="text" id="inputText" placeholder="Enter a country name">
+        <select id="dynamicDropdown">
+            <option value="">Select a country here</option>
+        </select>
+
+        <button id="likeButton" style="display: none;">Like</button>
+        <button id="dislikeButton" style="display: none;">Dislike</button>
+        <button id="compareButton" style="display: none;">Compare</button>
+        
+
+        <!-- Display the country info -->
+        <div class="display-container">
+            <div id="display1" class="display-box full-width"></div>
+
+            <div id="display2" class="display-box quarter-width">
+                <img src="{{ url_for('static', filename='images/gold.png') }}" alt="Gold Medal">
+                
+            </div>
+
+            <div id="display3" class="display-box quarter-width">
+                <img src="{{ url_for('static', filename='images/silver.png') }}" alt="Silver Medal">
+                
+            </div>
+
+            <div id="display4" class="display-box quarter-width">
+                <img src="{{ url_for('static', filename='images/bronze.png') }}" alt="Bronze Medal">
+                
+            </div>
+        </div>
+
+        <div class="chart-container" style="display:none;">
+            <canvas id="myPieChart"></canvas>
+        </div>
+
+    </div>
+
+    <script>
+        var myPieChart = null;
+        // test box
+        $(document).ready(function(){
+            // listening to the text box.
+            $('#inputText').on('input', function(){
+                var inputVal = $(this).val();
+                $.ajax({
+                    url: '/get_dropdown_options', 
+                    type: 'GET',
+                    data: {'input': inputVal},
+                    success: function(response){
+                        $('#dynamicDropdown').empty();
+                        $('#dynamicDropdown').append('<option value="">Select a country here</option>');
+                        response.options.forEach(function(option){
+                            $('#dynamicDropdown').append(`<option value="${option}">${option}</option>`);
+                        });
+                    }
+                });
+            });
+
+            // country selected
+            $(document).ready(function() {
+                $('#dynamicDropdown').change(function() {
+                    var selectedOption = $(this).val();
+                    console.log("Selected option: ", selectedOption);
+
+                    // Send ajax to flask 
+                    $.ajax({
+                        url: '/search', 
+                        type: 'POST',
+                        data: {'selected_option': selectedOption},
+                        success: function(response) {
+                            // Fill the display
+                            console.log(response); 
+                            
+                            $('#display1').text(response.display1).addClass('visible');
+                            $('#display2').text(response.display2).addClass('visible');
+                            $('#display3').text(response.display3).addClass('visible');
+                            $('#display4').text(response.display4).addClass('visible');
+                            createChart(response)
+                            
+                        }
+                    });
+                });
+            });
+
+            // Like press 
+            $('#dynamicDropdown').change(function() {
+                var selectedOption = $(this).val();
+                if(selectedOption) {
+                    $('#likeButton').show();
+                    $('#dislikeButton').show();
+                    $('#compareButton').show();
+                    
+                } else {
+                    $('#likeButton').hide();
+                    $('#dislikeButton'),hide();
+                    $('#compareButton').hide();
+                }
+            });
+
+
+            // Like button
+            $('#likeButton').click(function() {
+                var selectedCountry = $('#dynamicDropdown').val();
+                console.log(selectedCountry)
+                $.ajax({
+                    url: '/like_store',  
+                    type: 'POST',
+                    data: {'selected_like_country': selectedCountry},
+                    success: function(response) {
+                        if (response.status === 'logged_in_request') {
+                            window.location.href = '/login';
+                        } else {
+                            console.log(response);  
+                        }
+                            
+                    }
+                });
+            });
+
+
+            function createChart(data) {
+            
+                var Discipline_info = data.Discipline_info;
+                var len = Discipline_info.length;
+                var all_labels = []
+                var all_data = []
+                var ctx = document.getElementById('myPieChart').getContext('2d');
+                $('.chart-container').show();
+                
+
+                for (var i = 0; i < len; i++) {
+                    all_labels.push(Discipline_info[i].Discipline);
+                    all_data.push(Discipline_info[i].count);
+                }
+                console.log(all_labels);
+                console.log(all_data);
+                if (myPieChart) {
+                    
+                    myPieChart.data.labels = all_labels;
+                    myPieChart.data.datasets[0].data = all_data;
+                    myPieChart.update();
+                } else {
+                    myPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: all_labels,
+                            datasets: [{
+                                data: all_data, 
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false
+                        }
+                    });
+                }
+
+                
+            };
+
+
+            // Like button
+            $('#dislikeButton').click(function() {
+                var selectedCountry = $('#dynamicDropdown').val();
+                $.ajax({
+                    url: '/dislike_store',  
+                    type: 'POST',
+                    data: {'selected_dislike_country': selectedCountry},
+                    success: function(response) {
+                        if (response.status === 'logged_in_request') {
+                            window.location.href = '/login';
+                        } else {
+                            console.log(response);  
+                        }
+                            
+                    }
+                });
+            });
+
+
+            $('#compareButton').click(function() {
+                
+                var firstSelectedCountry = $('#dynamicDropdown').val();
+                console.log(firstSelectedCountry)
+                $.ajax({
+                    url: '/first_country_compare_store',  
+                    type: 'POST',
+                    data: {'first_selected_country': firstSelectedCountry},
+                    success: function(response) {
+                        
+                        window.location.href = '/compare';
+                        
+                            
+                    }
+                });
+
+                //window.location.href = '/compare';
+            });
+            
+
+
+        });
+    </script>
+</body>
+</html>
+
+

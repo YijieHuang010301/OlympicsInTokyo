@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Tokyo 2022 Olympics</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+            color: #333;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a4a4a; 
+            margin-top: 40px;
+        }
+        img {
+            height: 30px; 
+            vertical-align: middle;
+            margin-right: 5px; 
+        }
+        .centered-image {
+            display: block;
+            margin: 0 auto; 
+            max-width: 100%; 
+            height: auto; 
+        }
+
+        .button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            background-color: #4a4a4a; 
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .button:hover {
+            background-color: #333; 
+        }
+
+        .top-right {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .user-info {
+            padding-right: 10px;
+            font-size: 16px;
+            color: #4a4a4a; 
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Tokyo 2021 Olympics!</h1>
+
+    <div class="top-right">
+        {% if user_logged_in %}
+            <span class="user-info">Welcome, {{ user_name }}</span>
+            <button class="button" onclick="location.href='/logout'">Logout</button>
+        {% else %}
+            <button class="button" onclick="location.href='/login'">Login</button>
+        {% endif %}
+    </div>
+
+    <button class="button" onclick="location.href='/search'">Search</button>
+    <button class="button" onclick="location.href='/like'">Liked</button>
+    <button class="button" onclick="location.href='/advInfo'">More Information</button>
+    <img src="{{ url_for('static', filename='images/index_pic.png') }}" alt="Tokyo2021" class="centered-image">
+</body>
+</html>

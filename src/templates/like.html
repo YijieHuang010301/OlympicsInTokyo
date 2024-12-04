@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Liked Countries</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        .country-list {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .country-card {
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            padding: 20px;
+            border-radius: 8px;
+            width: calc(33% - 20px);
+            box-sizing: border-box;
+        }
+        .country-card h2 {
+            margin-top: 0;
+        }
+        .medal-info {
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+        }
+        .medal-info div {
+            text-align: center;
+        }
+        .return-home-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .return-home-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header">
+        <a href="/" class="return-home-btn">Main Page</a>
+        <h1>{{ username }}'s Liked Countries</h1>
+    </div>
+
+    <ul class="country-list">
+        {% for country in liked_countries %}
+            <li class="country-card">
+                <h2>{{ country.CountryName }}</h2>
+                <div class="medal-info">
+                    <div><strong>Gold:</strong> {{ country.Gold }}</div>
+                    <div><strong>Silver:</strong> {{ country.Silver }}</div>
+                    <div><strong>Bronze:</strong> {{ country.Bronze }}</div>
+                    <div><strong>Total:</strong> {{ country.Total }}</div>
+                </div>
+                <p>Liked on: {{ country.TimeStamp }}</p>
+            </li>
+        {% else %}
+            <li>No liked countries.</li>
+        {% endfor %}
+    </ul>
+
+    <hr>
+    <p class="stats-title">Your Like Statistics</p>
+    <div class="stats-section">
+        <div class="stats-card"><strong>Average Gold:</strong> {{ like_stats.Avg_Gold }}</div>
+        <div class="stats-card"><strong>Average Silver:</strong> {{ like_stats.Avg_Silver }}</div>
+        <div class="stats-card"><strong>Average Bronze:</strong> {{ like_stats.Avg_Bronze }}</div>
+        <div class="stats-card"><strong>Average Total:</strong> {{ like_stats.Avg_Total }}</div>
+        <div class="stats-card"><strong>Total Liked Countries:</strong> {{ like_stats.Total_Liked }}</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Adv Info</title>
+    <style>
+        .table-container h1 {
+            text-align: center;
+        }
+        .tables-wrapper {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+        }
+
+        .table-container {
+            margin: 10px;
+            border: 1px solid #ccc;
+            max-height: 700px;
+            overflow-y: auto;
+            width: 50%;
+        }
+
+        .table-container tbody tr {
+            display: none;
+        }
+
+        .table-container table {
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+
+        .table-container th,
+        .table-container td {
+            text-align: center; 
+            padding: 8px;
+            border: 1px solid #ccc; 
+        }
+        
+
+        label {
+            font-size: 24px;
+        }
+        .input-container {
+            text-align: center; 
+            margin-bottom: 20px; 
+        }
+
+        .input-container label {
+            display: block; 
+            margin-bottom: 10px; 
+            font-size: 20px;
+        }
+
+        .input-container input, 
+        .input-container button {
+            margin-top: 10px; 
+        }
+        .return-home-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .return-home-btn:hover {
+            background-color: #45a049;
+        }
+
+        @media screen and (max-width: 960px) {
+            .tables-wrapper {
+                flex-direction: column;
+            }
+            .table-container {
+                width: auto;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home-btn">Main Page</a>
+    <h1>Welcome to Advanced Info Page!</h1>
+    
+    <div class="input-container">
+        <label for="top-counts-input">Who are the most brilliant coaches? Which are the most shining countries? Type the top counts you want to see!</label>
+        <input type="number" id="top-counts-input" min="1" placeholder="Enter a number">
+        <button onclick="showTables()">Submit</button>
+    </div>
+    
+
+    <div class="tables-wrapper">
+        <div class="table-container">
+            <h1>Who are brilliant Coaches?</h1>
+            <!-- Coach table content should be inserted here -->
+            <table>
+                <!-- Table rows for coach info -->
+                <thead>
+                    <tr>
+                        <th>Coach</th>
+                        <th>Count_Athlete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for coach in coach_info %}
+                        <tr>
+                            <td>{{ coach[0] }}</td>
+                            <td>{{ coach[1] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="table-container">
+            <h1>Which are shining countries?</h1>
+            <!-- Country table content should be inserted here -->
+            <table>
+                <!-- Table rows for country info -->
+                <thead>
+                    <tr>
+                        <th>Country</th>
+                        <th>Amount_Athlete</th>
+                        <th>Amount_Medal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for country in country_info %}
+                        <tr>
+                            <td>{{ country[1] }}</td>
+                            <td>{{ country[0] }}</td>
+                            <td>{{ country[2] }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script>
+        function showTables() {
+            var count = parseInt(document.getElementById('top-counts-input').value, 10);
+
+            var tbodies = document.querySelectorAll('.table-container tbody');
+
+            tbodies.forEach(function(tbody) {
+
+                var rows = tbody.querySelectorAll('tr');
+                
+                rows.forEach(function(row) {
+                    row.style.display = 'none';
+                });
+
+                for (var i = 0; i < count && i < rows.length; i++) {
+                    rows[i].style.display = 'table-row';
+                }
+            });
+        }
+    </script>
+</body>
+</html>

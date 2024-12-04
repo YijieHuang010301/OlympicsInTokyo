@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <meta charset="UTF-8">
+    <title>Compare Countries</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #4a4a4a;
+        }
+
+        .form-container {
+            background-color: #fff;
+            padding: 20px;
+            margin: 30px auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            width: 300px;
+        }
+
+        select, input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        input[type="submit"] {
+            background-color: #4a4a4a;
+            color: white;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #333;
+        }
+        .chart-container {
+            width: 50%;        
+            margin: 0 auto;    
+            padding: 20px;     
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+            background-color: #fff; 
+            display: none;
+        }
+        .return-home-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .return-home-btn:hover {
+            background-color: #45a049;
+        }
+
+    </style>
+</head>
+<body>
+    <a href="/" class="return-home-btn">Main Page</a>
+    <h1>Compare Countries</h1>
+    <div class="form-container">
+        <p>First selected country: <strong>{{ first_country }}</strong></p>
+        <form method="POST" action="/compare">
+            <label for="second_country">Select Second Country:</label>
+            <select id="second_country" name="second_country">
+                {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
+                {% endfor %}
+            </select>
+            <select id="compare_method" name="compare_method">
+                {% for cmp_method in methods %}
+                    <option value="{{ cmp_method }}">{{ cmp_method }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="submit" id="compareButton" value="Compare">
+        </form>
+        
+    </div>
+
+    <div class="chart-container">
+        <canvas id="medalChart"></canvas>
+    </div>
+    
+
+    <div id="additionalButtons" style="display: none; text-align: center;">
+        <button class="button">Button 1</button>
+        <button class="button">Button 2</button>
+        <button class="button">Button 3</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var compareButton = document.getElementById('compareButton');
+            compareButton.addEventListener('click', function(event) {
+                event.preventDefault();
+                var selectedCountry = document.getElementById('second_country').value;
+                var selectedMethod = document.getElementById('compare_method').value;
+                
+                $.ajax({
+                    url: '/compare',
+                    type: 'POST',
+                    data: {
+                        'second_country': selectedCountry,
+                        'selected_method': selectedMethod
+                    },
+                    success: function(response) {
+                        
+                        console.log(response)
+                        document.querySelector('.chart-container').style.display = 'block';
+                        createChart(response);
+                    }
+                });
+            });
+        });
+
+        function createChart(data) {
+            console.log(data.countries);
+            var ctx = document.getElementById('medalChart').getContext('2d');
+            var selectedMethod = document.getElementById('compare_method').value;
+
+            document.getElementById('medalChart').style.display = 'block';
+            if (window.myBarChart) {
+                window.myBarChart.destroy();
+            }
+            
+            if (selectedMethod == "Medals Information") {
+                window.myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Gold', 'Silver', 'Bronze', 'Total'],
+                        
+                        datasets: [
+                            {
+                                label: data.countries[0],
+                                data: [data.first_country_info.gold, data.first_country_info.silver, data.first_country_info.bronze, data.first_country_info.total],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: data.countries[1],
+                                data: [data.second_country_info.gold, data.second_country_info.silver, data.second_country_info.bronze, data.second_country_info.total],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        if (value % 1 === 0) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else if (selectedMethod == "Coach & Athlete") {
+                
+                window.myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Coach', 'Athlete'],
+                        
+                        datasets: [
+                            {
+                                label: data.countries[0],
+                                data: [data.first_country_info.total_coaches, data.first_country_info.total_athletes],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: data.countries[1],
+                                data: [data.second_country_info.total_coaches, data.second_country_info.total_athletes],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        if (value % 1 === 0) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            } else if (selectedMethod == "Disciplines") {
+                window.myBarChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Number of Disciplines'],
+                        
+                        datasets: [
+                            {
+                                label: data.countries[0],
+                                data: [data.first_country_info.num_disciplines],
+                                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                borderColor: 'rgba(255, 99, 132, 1)',
+                                borderWidth: 1
+                            },
+                            {
+                                label: data.countries[1],
+                                data: [data.second_country_info.num_disciplines],
+                                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                                borderColor: 'rgba(54, 162, 235, 1)',
+                                borderWidth: 1
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    callback: function(value) {
+                                        if (value % 1 === 0) {
+                                            return value;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }    
+        }
+           
+        document.addEventListener('DOMContentLoaded', function() {
+        var form = document.querySelector('form');
+        form.addEventListener('submit', function(event) {
+            event.preventDefault(); 
+            document.getElementById('additionalButtons').style.display = 'block';
+
+        });
+    });
+    </script>
+</body>
+</html>
