@@ -66,15 +66,15 @@
     <div class="top-right">
         {% if user_logged_in %}
             <span class="user-info">Welcome, {{ user_name }}</span>
-            <button class="button" onclick="location.href='/logout'">Logout</button>
+            <button class="button" onclick="location.href='{{ app_url('logout') }}'">Logout</button>
         {% else %}
-            <button class="button" onclick="location.href='/login'">Login</button>
+            <button class="button" onclick="location.href='{{ app_url('login') }}'">Login</button>
         {% endif %}
     </div>
 
-    <button class="button" onclick="location.href='/search'">Search</button>
-    <button class="button" onclick="location.href='/like'">Liked</button>
-    <button class="button" onclick="location.href='/advInfo'">More Information</button>
-    <img src="{{ url_for('static', filename='images/index_pic.png') }}" alt="Tokyo2021" class="centered-image">
+    <button class="button" onclick="location.href='{{ app_url('search') }}'">Search</button>
+    <button class="button" onclick="location.href='{{ app_url('like') }}'">Liked</button>
+    <button class="button" onclick="location.href='{{ app_url('advInfo') }}'">More Information</button>
+    <img src="{{ app_url('static/images/index_pic.png') }}" alt="Tokyo2021" class="centered-image">
 </body>
 </html>

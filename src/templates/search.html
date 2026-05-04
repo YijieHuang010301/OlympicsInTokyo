@@ -107,7 +107,7 @@
     
     <div class="container">
         
-        <a href="/" class="return-home-btn">Main Page</a>
+        <a href="{{ app_url() }}" class="return-home-btn">Main Page</a>
         
         <h1>Search by country name</h1>
         <input type="text" id="inputText" placeholder="Enter a country name">
@@ -125,17 +125,17 @@
             <div id="display1" class="display-box full-width"></div>
 
             <div id="display2" class="display-box quarter-width">
-                <img src="{{ url_for('static', filename='images/gold.png') }}" alt="Gold Medal">
+                <img src="{{ app_url('static/images/gold.png') }}" alt="Gold Medal">
                 
             </div>
 
             <div id="display3" class="display-box quarter-width">
-                <img src="{{ url_for('static', filename='images/silver.png') }}" alt="Silver Medal">
+                <img src="{{ app_url('static/images/silver.png') }}" alt="Silver Medal">
                 
             </div>
 
             <div id="display4" class="display-box quarter-width">
-                <img src="{{ url_for('static', filename='images/bronze.png') }}" alt="Bronze Medal">
+                <img src="{{ app_url('static/images/bronze.png') }}" alt="Bronze Medal">
                 
             </div>
         </div>
@@ -147,6 +147,8 @@
     </div>
 
     <script>
+        const APP_BASE_PATH = '{{ app_base_path }}';
+        const appUrl = (path) => `${APP_BASE_PATH}/${path}`;
         var myPieChart = null;
         // test box
         $(document).ready(function(){
@@ -154,7 +156,7 @@
             $('#inputText').on('input', function(){
                 var inputVal = $(this).val();
                 $.ajax({
-                    url: '/get_dropdown_options', 
+                    url: appUrl('get_dropdown_options'), 
                     type: 'GET',
                     data: {'input': inputVal},
                     success: function(response){
@@ -175,7 +177,7 @@
 
                     // Send ajax to flask 
                     $.ajax({
-                        url: '/search', 
+                        url: appUrl('search'), 
                         type: 'POST',
                         data: {'selected_option': selectedOption},
                         success: function(response) {
@@ -214,12 +216,12 @@
                 var selectedCountry = $('#dynamicDropdown').val();
                 console.log(selectedCountry)
                 $.ajax({
-                    url: '/like_store',  
+                    url: appUrl('like_store'),  
                     type: 'POST',
                     data: {'selected_like_country': selectedCountry},
                     success: function(response) {
                         if (response.status === 'logged_in_request') {
-                            window.location.href = '/login';
+                            window.location.href = appUrl('login');
                         } else {
                             console.log(response);  
                         }
@@ -274,12 +276,12 @@
             $('#dislikeButton').click(function() {
                 var selectedCountry = $('#dynamicDropdown').val();
                 $.ajax({
-                    url: '/dislike_store',  
+                    url: appUrl('dislike_store'),  
                     type: 'POST',
                     data: {'selected_dislike_country': selectedCountry},
                     success: function(response) {
                         if (response.status === 'logged_in_request') {
-                            window.location.href = '/login';
+                            window.location.href = appUrl('login');
                         } else {
                             console.log(response);  
                         }
@@ -294,18 +296,18 @@
                 var firstSelectedCountry = $('#dynamicDropdown').val();
                 console.log(firstSelectedCountry)
                 $.ajax({
-                    url: '/first_country_compare_store',  
+                    url: appUrl('first_country_compare_store'),  
                     type: 'POST',
                     data: {'first_selected_country': firstSelectedCountry},
                     success: function(response) {
                         
-                        window.location.href = '/compare';
+                        window.location.href = appUrl('compare');
                         
                             
                     }
                 });
 
-                //window.location.href = '/compare';
+                //window.location.href = appUrl('compare');
             });
             
 
@@ -314,5 +316,3 @@
     </script>
 </body>
 </html>
-
-

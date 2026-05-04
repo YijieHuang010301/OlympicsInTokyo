@@ -1,0 +1,9 @@
+#!/bin/bash
+export PORT=${PORT:-9000}
+if [ -x /var/lang/python39/bin/python3.9 ]; then
+  exec /var/lang/python39/bin/python3.9 app.py
+fi
+if [ -x /var/lang/python310/bin/python3.10 ]; then
+  exec /var/lang/python310/bin/python3.10 app.py
+fi
+exec python3 app.py

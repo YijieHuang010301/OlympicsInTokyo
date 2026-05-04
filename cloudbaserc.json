@@ -1,0 +1,27 @@
+{
+  "$schema": "https://static.cloudbase.net/cli/cloudbaserc.schema.json",
+  "version": "2.0",
+  "envId": "olympics-demo-d7gc8fzgk5d0bf9b8",
+  "functionRoot": ".",
+  "functions": [
+    {
+      "name": "OlympicsInTokyo",
+      "type": "HTTP",
+      "runtime": "Python3.9",
+      "handler": "app.main",
+      "dir": ".",
+      "timeout": 30,
+      "memorySize": 512,
+      "envVariables": {
+        "SECRET_KEY": "olympics-in-tokyo-cloudbase-demo",
+        "USER_DATA_FILE": "/tmp/user_data.json",
+        "APP_BASE_PATH": "OlympicsInTokyo",
+        "CLOUDBASE_ENV_ID": "olympics-demo-d7gc8fzgk5d0bf9b8",
+        "CLOUDBASE_REGION": "ap-shanghai",
+        "CLOUDBASE_USE_DB": "true",
+        "USERS_COLLECTION": "olympics_users",
+        "LIKES_COLLECTION": "olympics_likes"
+      }
+    }
+  ]
+}

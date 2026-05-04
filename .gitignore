@@ -1,0 +1,7 @@
+.DS_Store
+__pycache__/
+*.pyc
+.pytest_cache/
+data/user_data.json
+data/*.tmp
+third_party/
