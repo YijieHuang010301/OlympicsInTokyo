@@ -74,8 +74,15 @@
             font-size: 16px; 
             color: white; 
             font-weight: bold; 
+            margin: 12px 4px 0;
+            padding: 8px 14px;
         }
-        
+
+        button:disabled {
+            cursor: not-allowed;
+            opacity: 0.55;
+        }
+
 
         button:active {
             
@@ -101,9 +108,35 @@
         .container {
             position: relative;
         }
+
+        .toast {
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+            color: white;
+            display: none;
+            font-size: 15px;
+            font-weight: bold;
+            left: 50%;
+            max-width: 360px;
+            padding: 12px 18px;
+            position: fixed;
+            text-align: center;
+            top: 22px;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .toast.success {
+            background-color: #2e7d32;
+        }
+
+        .toast.error {
+            background-color: #c62828;
+        }
     </style>
 </head>
 <body>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
     
     <div class="container">
         
@@ -150,6 +183,46 @@
         const APP_BASE_PATH = '{{ app_base_path }}';
         const appUrl = (path) => `${APP_BASE_PATH}/${path}`;
         var myPieChart = null;
+        var toastTimer = null;
+
+        function showToast(message, type) {
+            var toast = $('#toast');
+            clearTimeout(toastTimer);
+            toast
+                .removeClass('success error')
+                .addClass(type || 'success')
+                .text(message)
+                .fadeIn(120);
+            toastTimer = setTimeout(function() {
+                toast.fadeOut(180);
+            }, 2600);
+        }
+
+        function setActionButtonsVisible(visible) {
+            $('#likeButton').toggle(visible);
+            $('#dislikeButton').toggle(visible);
+            $('#compareButton').toggle(visible);
+        }
+
+        function setButtonLoading(button, loading, loadingText) {
+            var $button = $(button);
+            if (loading) {
+                $button.data('original-text', $button.text());
+                $button.text(loadingText).prop('disabled', true);
+            } else {
+                $button.text($button.data('original-text')).prop('disabled', false);
+            }
+        }
+
+        function selectedCountryOrToast() {
+            var selectedCountry = $('#dynamicDropdown').val();
+            if (!selectedCountry) {
+                showToast('Please select a country first.', 'error');
+                return null;
+            }
+            return selectedCountry;
+        }
+
         // test box
         $(document).ready(function(){
             // listening to the text box.
@@ -165,6 +238,9 @@
                         response.options.forEach(function(option){
                             $('#dynamicDropdown').append(`<option value="${option}">${option}</option>`);
                         });
+                    },
+                    error: function() {
+                        showToast('Could not load country options. Please try again.', 'error');
                     }
                 });
             });
@@ -190,6 +266,9 @@
                             $('#display4').text(response.display4).addClass('visible');
                             createChart(response)
                             
+                        },
+                        error: function() {
+                            showToast('Could not load country information. Please try again.', 'error');
                         }
                     });
                 });
@@ -199,22 +278,21 @@
             $('#dynamicDropdown').change(function() {
                 var selectedOption = $(this).val();
                 if(selectedOption) {
-                    $('#likeButton').show();
-                    $('#dislikeButton').show();
-                    $('#compareButton').show();
+                    setActionButtonsVisible(true);
                     
                 } else {
-                    $('#likeButton').hide();
-                    $('#dislikeButton'),hide();
-                    $('#compareButton').hide();
+                    setActionButtonsVisible(false);
                 }
             });
 
 
             // Like button
             $('#likeButton').click(function() {
-                var selectedCountry = $('#dynamicDropdown').val();
-                console.log(selectedCountry)
+                var selectedCountry = selectedCountryOrToast();
+                if (!selectedCountry) {
+                    return;
+                }
+                setButtonLoading(this, true, 'Liking...');
                 $.ajax({
                     url: appUrl('like_store'),  
                     type: 'POST',
@@ -223,9 +301,15 @@
                         if (response.status === 'logged_in_request') {
                             window.location.href = appUrl('login');
                         } else {
-                            console.log(response);  
+                            showToast(`${selectedCountry} added to liked countries.`, 'success');
                         }
                             
+                    },
+                    error: function() {
+                        showToast('Could not like this country. Please try again.', 'error');
+                    },
+                    complete: function() {
+                        setButtonLoading('#likeButton', false);
                     }
                 });
             });
@@ -274,7 +358,11 @@
 
             // Like button
             $('#dislikeButton').click(function() {
-                var selectedCountry = $('#dynamicDropdown').val();
+                var selectedCountry = selectedCountryOrToast();
+                if (!selectedCountry) {
+                    return;
+                }
+                setButtonLoading(this, true, 'Removing...');
                 $.ajax({
                     url: appUrl('dislike_store'),  
                     type: 'POST',
@@ -283,9 +371,15 @@
                         if (response.status === 'logged_in_request') {
                             window.location.href = appUrl('login');
                         } else {
-                            console.log(response);  
+                            showToast(`${selectedCountry} removed from liked countries.`, 'success');
                         }
                             
+                    },
+                    error: function() {
+                        showToast('Could not remove this country. Please try again.', 'error');
+                    },
+                    complete: function() {
+                        setButtonLoading('#dislikeButton', false);
                     }
                 });
             });
@@ -293,8 +387,11 @@
 
             $('#compareButton').click(function() {
                 
-                var firstSelectedCountry = $('#dynamicDropdown').val();
-                console.log(firstSelectedCountry)
+                var firstSelectedCountry = selectedCountryOrToast();
+                if (!firstSelectedCountry) {
+                    return;
+                }
+                setButtonLoading(this, true, 'Opening...');
                 $.ajax({
                     url: appUrl('first_country_compare_store'),  
                     type: 'POST',
@@ -304,6 +401,10 @@
                         window.location.href = appUrl('compare');
                         
                             
+                    },
+                    error: function() {
+                        showToast('Could not open comparison. Please try again.', 'error');
+                        setButtonLoading('#compareButton', false);
                     }
                 });
 
