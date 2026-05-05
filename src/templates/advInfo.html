@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Adv Info</title>
+    <link rel="stylesheet" href="{{ app_url('static/css/main.css') }}">
     <style>
         .table-container h1 {
             text-align: center;
@@ -55,20 +56,6 @@
         .input-container button {
             margin-top: 10px; 
         }
-        .return-home-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .return-home-btn:hover {
-            background-color: #45a049;
-        }
 
         @media screen and (max-width: 960px) {
             .tables-wrapper {
@@ -81,7 +68,7 @@
         
     </style>
 </head>
-<body>
+<body class="page">
     <a href="{{ app_url() }}" class="return-home-btn">Main Page</a>
     <h1>Welcome to Advanced Info Page!</h1>
     

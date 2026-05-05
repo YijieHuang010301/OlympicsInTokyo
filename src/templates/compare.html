@@ -5,46 +5,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <meta charset="UTF-8">
     <title>Compare Countries</title>
+    <link rel="stylesheet" href="{{ app_url('static/css/main.css') }}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            padding: 20px;
-            text-align: center;
-        }
-
-        h1 {
-            color: #4a4a4a;
-        }
-
-        .form-container {
-            background-color: #fff;
-            padding: 20px;
-            margin: 30px auto;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            width: 300px;
-        }
-
-        select, input[type="submit"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-
-        input[type="submit"] {
-            background-color: #4a4a4a;
-            color: white;
-            cursor: pointer;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #333;
-        }
         .chart-container {
             width: 50%;        
             margin: 0 auto;    
@@ -53,24 +15,9 @@
             background-color: #fff; 
             display: none;
         }
-        .return-home-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .return-home-btn:hover {
-            background-color: #45a049;
-        }
-
     </style>
 </head>
-<body>
+<body class="page text-center">
     <a href="{{ app_url() }}" class="return-home-btn">Main Page</a>
     <h1>Compare Countries</h1>
     <div class="form-container">

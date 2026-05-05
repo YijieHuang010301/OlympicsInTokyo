@@ -5,15 +5,8 @@
     <!-- jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="{{ app_url('static/css/main.css') }}">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f7f7;
-            color: #333;
-        }
-
         img {
             height: 30px; 
             vertical-align: middle;
@@ -67,75 +60,12 @@
             margin-right: auto;
         }
 
-        button {
-            border-radius: 5px; 
-            background: linear-gradient(to right, #111411, rgb(42, 43, 42)); 
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-            font-size: 16px; 
-            color: white; 
-            font-weight: bold; 
-            margin: 12px 4px 0;
-            padding: 8px 14px;
-        }
-
-        button:disabled {
-            cursor: not-allowed;
-            opacity: 0.55;
-        }
-
-
-        button:active {
-            
-            box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.2) inset; 
-        }
-
-
-        .return-home-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .return-home-btn:hover {
-            background-color: #45a049;
-        }
-
         .container {
             position: relative;
         }
-
-        .toast {
-            border-radius: 6px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
-            color: white;
-            display: none;
-            font-size: 15px;
-            font-weight: bold;
-            left: 50%;
-            max-width: 360px;
-            padding: 12px 18px;
-            position: fixed;
-            text-align: center;
-            top: 22px;
-            transform: translateX(-50%);
-            z-index: 1000;
-        }
-
-        .toast.success {
-            background-color: #2e7d32;
-        }
-
-        .toast.error {
-            background-color: #c62828;
-        }
     </style>
 </head>
-<body>
+<body class="page">
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
     
     <div class="container">

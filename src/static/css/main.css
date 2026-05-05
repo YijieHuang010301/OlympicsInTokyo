@@ -1,0 +1,247 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+h1 {
+    color: #4a4a4a;
+    text-align: center;
+}
+
+button,
+input[type="submit"],
+.button {
+    background-color: #4a4a4a;
+    border: 0;
+    border-radius: 5px;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    font-weight: 700;
+    margin: 10px 4px 0;
+    padding: 10px 16px;
+    text-decoration: none;
+    transition: background-color 0.2s, box-shadow 0.2s, opacity 0.2s;
+}
+
+button:hover,
+input[type="submit"]:hover,
+.button:hover {
+    background-color: #333;
+}
+
+button:disabled,
+input[type="submit"]:disabled,
+.button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+button:active,
+input[type="submit"]:active,
+.button:active {
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: block;
+    font-size: 15px;
+    padding: 10px;
+    width: 100%;
+}
+
+label {
+    font-weight: 700;
+}
+
+.page {
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.center-page {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.form-container,
+.form-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    margin: 30px auto;
+    max-width: 340px;
+    padding: 20px;
+    width: 100%;
+}
+
+.form-card input,
+.form-container select,
+.form-container input[type="submit"] {
+    margin-top: 10px;
+}
+
+.form-card input[type="submit"] {
+    width: 100%;
+}
+
+.return-home-btn {
+    background-color: #2f7d32;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px;
+    position: absolute;
+    right: 10px;
+    text-decoration: none;
+    top: 10px;
+}
+
+.return-home-btn:hover {
+    background-color: #276a2a;
+}
+
+.toast {
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+    color: #fff;
+    display: none;
+    font-size: 15px;
+    font-weight: 700;
+    left: 50%;
+    max-width: 360px;
+    padding: 12px 18px;
+    position: fixed;
+    text-align: center;
+    top: 22px;
+    transform: translateX(-50%);
+    z-index: 1000;
+}
+
+.toast.success {
+    background-color: #2e7d32;
+}
+
+.toast.error {
+    background-color: #c62828;
+}
+
+.server-error {
+    background-color: #ffebee;
+    border: 1px solid #ef9a9a;
+    border-radius: 4px;
+    color: #b71c1c;
+    margin-bottom: 12px;
+    padding: 10px;
+}
+
+.register-hint {
+    color: #2e7d32;
+    display: none;
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.error-hint {
+    color: #c62828;
+    display: none;
+    font-size: 14px;
+    margin: 0 0 10px;
+}
+
+.confirm-password-container {
+    display: none;
+}
+
+.top-right {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.user-info {
+    color: #4a4a4a;
+    font-size: 16px;
+    padding-right: 10px;
+}
+
+.country-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    list-style-type: none;
+    padding: 0;
+}
+
+.country-card,
+.stats-card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin: 10px;
+    padding: 20px;
+}
+
+.country-card {
+    width: calc(33% - 20px);
+}
+
+.country-card h2 {
+    margin-top: 0;
+}
+
+.medal-info {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.medal-info div {
+    text-align: center;
+}
+
+.stats-title {
+    font-size: 20px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.stats-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.header h1 {
+    color: #fff;
+}
+
+@media screen and (max-width: 760px) {
+    .country-card {
+        width: 100%;
+    }
+
+    .return-home-btn {
+        position: static;
+        display: inline-block;
+        margin-bottom: 10px;
+    }
+}
